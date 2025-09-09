@@ -1,69 +1,94 @@
-# React + TypeScript + Vite
+# 🧱 Breakout Game in React
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+This is a classic **Breakout/Brick Breaker** game built using **React** and the HTML5 **Canvas API**.
 
-Currently, two official plugins are available:
+You control a paddle at the bottom of the screen to bounce a ball and break all the bricks. Lose all your lives and it's game over. Break all the bricks and you win!
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+---
 
-## Expanding the ESLint configuration
+## 🎮 Features
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+- Real-time paddle and ball movement
+- Brick collision detection
+- Score and lives tracking
+- Win and game over states with canvas animations
+- Responsive paddle controls with arrow keys
+- Restart button to reset game state
 
-```js
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+---
 
-      // Remove tseslint.configs.recommended and replace with this
-      ...tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      ...tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      ...tseslint.configs.stylisticTypeChecked,
+## 🛠️ Tech Stack
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+- [React](https://reactjs.org/)
+- HTML5 `<canvas>`
+- TypeScript (optional, but assumed in code)
+
+## 🚀 Getting Started
+
+### 1. Clone the repository
+
+```bash
+git clone https://github.com/your-username/react-breakout-game.git
+cd react-breakout-game
+````
+
+### 2. Install dependencies
+
+```bash
+npm install
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+### 3. Start the development server
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+npm start
 ```
+
+This will open the game in your browser at `http://localhost:3000`
+
+---
+
+## 🎯 Controls
+
+* **Left Arrow**: Move paddle left
+* **Right Arrow**: Move paddle right
+* **Restart Button**: Resets the entire game (score, lives, bricks, ball, paddle)
+
+---
+
+## 📁 Project Structure
+
+```
+src/
+├── components/
+│   └── GameCanvas.tsx     # Main game logic using canvas
+├── App.tsx                # App wrapper
+└── index.tsx              # Entry point
+```
+
+---
+
+## 📦 Build for Production
+
+```bash
+npm run build
+```
+
+This will generate a production-ready build in the `build/` directory.
+
+---
+
+## 🧩 Ideas for Improvements
+
+* Add power-ups (extra life, wider paddle, multi-ball, etc.)
+* Add sound effects and music
+* Add difficulty levels or multiple stages
+* Mobile/touch controls
+* Better graphics with sprite images
+
+---
+
+## 🙌 Acknowledgements
+
+Inspired by the original **Breakout** game by Atari.
+Built for learning and fun using React + Canvas!
