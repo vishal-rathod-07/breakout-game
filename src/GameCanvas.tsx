@@ -23,6 +23,28 @@ const GameCanvas = () => {
     ArrowRight: false,
   });
 
+  // Brick settings
+  const brickRowCount = 5;
+  const brickColumnCount = 8;
+  const brickWidth = 75;
+  const brickHeight = 20;
+  const brickPadding = 10;
+  const brickOffsetTop = 20;
+  const brickOffsetLeft = 65;
+
+  // Create 2D array of bricks
+  const bricks = useRef(
+    Array.from({ length: brickRowCount }, (_, row) =>
+      Array.from({ length: brickColumnCount }, (_, col) => ({
+        x: col * (brickWidth + brickPadding) + brickOffsetLeft,
+        y: row * (brickHeight + brickPadding) + brickOffsetTop,
+        width: brickWidth,
+        height: brickHeight,
+        active: true,
+      })),
+    ),
+  );
+
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -80,6 +102,16 @@ const GameCanvas = () => {
       // Clear canvas
       ctx.fillStyle = '#000';
       ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      // Draw bricks
+      bricks.current.forEach((row) => {
+        row.forEach((brick) => {
+          if (brick.active) {
+            ctx.fillStyle = '#0f0'; // green bricks
+            ctx.fillRect(brick.x, brick.y, brick.width, brick.height);
+          }
+        });
+      });
 
       // Draw paddle
       ctx.fillStyle = '#00f';
