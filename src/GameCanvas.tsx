@@ -24,6 +24,7 @@ const generateBricks = () => {
 const GameCanvas = () => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const gameOverFrameId = useRef<number | null>(null);
+  const gameWinFrameId = useRef<number | null>(null);
 
   const [score, setScore] = React.useState(0);
   const [lives, setLives] = React.useState(3);
@@ -84,6 +85,29 @@ const GameCanvas = () => {
       }, 500);
 
       gameOverFrameId.current = requestAnimationFrame(drawGameOver);
+    };
+
+    let winBlink = true;
+
+    const drawWinScreen = () => {
+      const ctx = canvasRef.current?.getContext('2d');
+      if (!ctx) return;
+
+      ctx.fillStyle = '#000';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      if (winBlink) {
+        ctx.fillStyle = '#0f0';
+        ctx.font = '48px Arial';
+        ctx.textAlign = 'center';
+        ctx.fillText('YOU WIN!', canvas.width / 2, canvas.height / 2);
+      }
+
+      setTimeout(() => {
+        winBlink = !winBlink;
+      }, 500);
+
+      gameWinFrameId.current = requestAnimationFrame(drawWinScreen);
     };
 
     const draw = () => {
@@ -169,6 +193,7 @@ const GameCanvas = () => {
               if (allCleared) {
                 setGameWin(true);
                 cancelAnimationFrame(animationFrameId);
+                drawWinScreen(); // Start win animation
                 return;
               }
             }
@@ -238,6 +263,9 @@ const GameCanvas = () => {
       if (gameOverFrameId.current) {
         cancelAnimationFrame(gameOverFrameId.current);
       }
+      if (gameWinFrameId.current) {
+        cancelAnimationFrame(gameWinFrameId.current);
+      }
       window.removeEventListener('keydown', handleKeyDown);
       window.removeEventListener('keyup', handleKeyUp);
     };
@@ -278,6 +306,9 @@ const GameCanvas = () => {
           setGameWin(false);
           if (gameOverFrameId.current) {
             cancelAnimationFrame(gameOverFrameId.current);
+          }
+          if (gameWinFrameId.current) {
+            cancelAnimationFrame(gameWinFrameId.current);
           }
           // Reset positions
           ballX.current = 400;
