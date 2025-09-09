@@ -8,11 +8,16 @@ const GameCanvas = () => {
   const paddleHeight = 20;
   const paddleY = 570;
   const paddleSpeed = 7;
+  const paddleX = useRef((800 - paddleWidth) / 2);
 
-  // Store paddleX using useRef
-  const paddleX = useRef((800 - paddleWidth) / 2); // center
+  // Ball settings
+  const ballRadius = 10;
+  const ballX = useRef(400); // center of canvas
+  const ballY = useRef(300);
+  const ballDX = useRef(4);  // x speed
+  const ballDY = useRef(-4); // y speed
 
-  // Keys state
+  // Key tracking
   const keys = useRef({
     ArrowLeft: false,
     ArrowRight: false,
@@ -21,7 +26,6 @@ const GameCanvas = () => {
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
-
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
@@ -29,17 +33,32 @@ const GameCanvas = () => {
 
     const draw = () => {
       // Update paddle position
-      if (keys.current.ArrowLeft) {
-        paddleX.current -= paddleSpeed;
-      }
-      if (keys.current.ArrowRight) {
-        paddleX.current += paddleSpeed;
-      }
+      if (keys.current.ArrowLeft) paddleX.current -= paddleSpeed;
+      if (keys.current.ArrowRight) paddleX.current += paddleSpeed;
 
-      // Keep paddle inside canvas
+      // Keep paddle in bounds
       if (paddleX.current < 0) paddleX.current = 0;
       if (paddleX.current + paddleWidth > canvas.width) {
         paddleX.current = canvas.width - paddleWidth;
+      }
+
+      // Update ball position
+      ballX.current += ballDX.current;
+      ballY.current += ballDY.current;
+
+      // Bounce off left/right walls
+      if (ballX.current - ballRadius < 0 || ballX.current + ballRadius > canvas.width) {
+        ballDX.current *= -1;
+      }
+
+      // Bounce off top
+      if (ballY.current - ballRadius < 0) {
+        ballDY.current *= -1;
+      }
+
+      // Bounce off bottom (for now, reverse direction — we'll handle game over later)
+      if (ballY.current + ballRadius > canvas.height) {
+        ballDY.current *= -1;
       }
 
       // Clear canvas
@@ -50,11 +69,18 @@ const GameCanvas = () => {
       ctx.fillStyle = '#00f';
       ctx.fillRect(paddleX.current, paddleY, paddleWidth, paddleHeight);
 
+      // Draw ball
+      ctx.beginPath();
+      ctx.arc(ballX.current, ballY.current, ballRadius, 0, Math.PI * 2);
+      ctx.fillStyle = '#f00';
+      ctx.fill();
+      ctx.closePath();
+
       // Loop
       animationFrameId = requestAnimationFrame(draw);
     };
 
-    // Handle keyboard input
+    // Keyboard handlers
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
         keys.current[e.key] = true;
@@ -70,7 +96,7 @@ const GameCanvas = () => {
     window.addEventListener('keydown', handleKeyDown);
     window.addEventListener('keyup', handleKeyUp);
 
-    draw();
+    draw(); // Start game loop
 
     return () => {
       cancelAnimationFrame(animationFrameId);
