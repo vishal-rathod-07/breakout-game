@@ -6,15 +6,23 @@ const GameCanvas = () => {
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
+
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
-    // Clear and fill background
+    // Draw black background
     ctx.fillStyle = '#000';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
   }, []);
 
-  return <canvas ref={canvasRef} width={800} height={600} />;
+  return (
+    <canvas
+      ref={canvasRef}
+      width={800}
+      height={600}
+      style={{ border: '2px solid #fff', display: 'block', margin: '0 auto' }}
+    />
+  );
 };
 
 export default GameCanvas;
