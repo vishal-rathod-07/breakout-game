@@ -23,6 +23,7 @@ const generateBricks = () => {
 
 const GameCanvas = () => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const gameOverFrameId = useRef<number | null>(null);
 
   const [score, setScore] = React.useState(0);
   const [lives, setLives] = React.useState(3);
@@ -59,6 +60,31 @@ const GameCanvas = () => {
     if (!ctx) return;
 
     let animationFrameId: number;
+    let blink = true;
+
+    const drawGameOver = () => {
+      const ctx = canvasRef.current?.getContext('2d');
+      if (!ctx) return;
+
+      // Clear canvas
+      ctx.fillStyle = '#000';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      // Blink "GAME OVER" every 500ms
+      if (blink) {
+        ctx.fillStyle = 'red';
+        ctx.font = '48px Arial';
+        ctx.textAlign = 'center';
+        ctx.fillText('GAME OVER', canvas.width / 2, canvas.height / 2);
+      }
+
+      // Toggle blink every ~30 frames
+      setTimeout(() => {
+        blink = !blink;
+      }, 500);
+
+      gameOverFrameId.current = requestAnimationFrame(drawGameOver);
+    };
 
     const draw = () => {
       if (gameOver || gameWin) return; // Stop animation on game end
@@ -104,6 +130,7 @@ const GameCanvas = () => {
         } else {
           setGameOver(true);
           cancelAnimationFrame(animationFrameId);
+          drawGameOver(); // Start game over animation
           return;
         }
       }
@@ -208,6 +235,9 @@ const GameCanvas = () => {
 
     return () => {
       cancelAnimationFrame(animationFrameId);
+      if (gameOverFrameId.current) {
+        cancelAnimationFrame(gameOverFrameId.current);
+      }
       window.removeEventListener('keydown', handleKeyDown);
       window.removeEventListener('keyup', handleKeyUp);
     };
@@ -246,7 +276,9 @@ const GameCanvas = () => {
           setLives(3);
           setGameOver(false);
           setGameWin(false);
-
+          if (gameOverFrameId.current) {
+            cancelAnimationFrame(gameOverFrameId.current);
+          }
           // Reset positions
           ballX.current = 400;
           ballY.current = paddleY - ballRadius - 1;
