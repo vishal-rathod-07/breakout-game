@@ -14,7 +14,7 @@ const GameCanvas = () => {
   const ballRadius = 10;
   const ballX = useRef(400); // center of canvas
   const ballY = useRef(300);
-  const ballDX = useRef(4);  // x speed
+  const ballDX = useRef(4); // x speed
   const ballDY = useRef(-4); // y speed
 
   // Key tracking
@@ -47,7 +47,10 @@ const GameCanvas = () => {
       ballY.current += ballDY.current;
 
       // Bounce off left/right walls
-      if (ballX.current - ballRadius < 0 || ballX.current + ballRadius > canvas.width) {
+      if (
+        ballX.current - ballRadius < 0 ||
+        ballX.current + ballRadius > canvas.width
+      ) {
         ballDX.current *= -1;
       }
 
@@ -59,6 +62,19 @@ const GameCanvas = () => {
       // Bounce off bottom (for now, reverse direction — we'll handle game over later)
       if (ballY.current + ballRadius > canvas.height) {
         ballDY.current *= -1;
+      }
+
+      // Bounce off paddle
+      if (
+        ballY.current + ballRadius >= paddleY && // ball at paddle level
+        ballX.current >= paddleX.current && // within paddle left
+        ballX.current <= paddleX.current + paddleWidth // within paddle right
+      ) {
+        ballDY.current *= -1;
+
+        // Optional: add angle control based on hit position
+        // const hitPoint = ballX.current - (paddleX.current + paddleWidth / 2);
+        // ballDX.current = hitPoint * 0.15; // control x speed based on where it hits
       }
 
       // Clear canvas
